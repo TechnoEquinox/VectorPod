@@ -1,0 +1,15 @@
+{
+    "robotSerial": "00304324",
+    "ip_address": "192.168.50.46",
+    "robot_name": "Vector N9N4",
+    "robot_wallet": 97,
+    "robot_energy_level": 115,
+    "robot_level": 4,
+    "robot_xp": 200,
+    "last_jog": "2023-12-07T19:13:00",
+    "items": [
+        "Juice Box",
+        "Wild Grass Seed",
+        "Sunflower"
+    ]
+}

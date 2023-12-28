@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vector Life Test</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/8cdc8cbed9.js" crossorigin="anonymous"></script>
+
+    <style>
+        .values-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 2px solid #000; /* This is the divider above the values */
+            border-bottom: 2px solid #000; /* This is the divider below the values */
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .values-container > div {
+            padding: 0 15px; /* Adjusted the padding for more space between label and values */
+        }
+    </style>
+    <style>
+        .interact-buttons-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+    
+        .interact-buttons-container button {
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="robot-name"></h1>
+    
+    <!-- Horizontal Values Display -->
+    <div class="values-container">
+        <div>
+            <label>Wallet:</label>
+            <span id="robot-wallet"></span> coins
+        </div>
+        <div>
+            <label>Energy Level:</label>
+            <span id="robot-energy-level"></span>
+        </div>
+        <div>
+            <label>Level:</label>
+            <span id="robot-level"></span>
+        </div>
+        <div>
+            <label>XP:</label>
+            <span id="robot-xp"></span>
+        </div>
+    </div>
+
+    <h2>Interact</h2>
+
+    <div class="interact-buttons-container">
+        <button id="runLevelManager">Run Level Manager</button>
+        <button id="runGoForJog">Vector Go For Jog</button>
+        <button id="runWalletManager">Run Wallet Manager</button>
+        <button id="runBatteryManager">Run Battery Manager</button>
+    </div>
+
+    <div class="output-toggle-container">
+        <input type="checkbox" id="showOutputToggle">
+        <label for="showOutputToggle">Show debug output</label>
+    </div>    
+    
+    <div class="container mt-5">
+        <button id="backButton" class="btn btn-secondary">Go Back</button>
+    </div>
+
+    <!-- Error Popup -->
+    <div id="errorPopup" style="display: none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 20px; background-color: #f44336; color: white; z-index: 1000;">
+        An error occurred! 
+        <button onclick="closePopup()">Dismiss</button>
+    </div>
+    
+    <script>
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.history.back();
+        });
+
+        fetch('robot_config.json')
+        .then(response => response.json())
+        .then(data => {
+            const maxEnergy = 95 + (data.robot_level * 5);
+            const energyPerHour = (10 * data.robot_level) / 2;
+
+            document.getElementById('robot-name').textContent = data.robot_name;
+            document.getElementById('robot-wallet').textContent = data.robot_wallet;
+            document.getElementById('robot-energy-level').textContent = `${data.robot_energy_level}/${maxEnergy} (+${energyPerHour}/hr)`;
+            document.getElementById('robot-level').textContent = data.robot_level;
+            document.getElementById('robot-xp').textContent = data.robot_xp;
+        })
+        .catch(error => {
+            console.error('Error fetching or parsing JSON:', error);
+        });
+    </script>
+    <script>
+        // Popup control functions
+        function showErrorPopup() {
+            document.getElementById('errorPopup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('errorPopup').style.display = 'none';
+        }
+
+        function runScript(endpoint) {
+            fetch('http://192.168.50.123:8091/' + endpoint, {
+                method: 'POST'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 500) {
+                        showErrorPopup('An error occurred while executing the script.');
+                    }
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    const showOutput = document.getElementById('showOutputToggle').checked;
+                    if (showOutput) {
+                        alert(data.message);  // Display the print statements from the Python script.
+                    }
+                } 
+            })
+            .catch(error => {
+                console.error('Error executing the script:', error);
+            });
+        }
+
+    
+        document.getElementById('runLevelManager').addEventListener('click', function() {
+            runScript('run_level_manager');
+        });
+    
+        document.getElementById('runGoForJog').addEventListener('click', function() {
+            runScript('run_go_for_jog');
+        });
+    
+        document.getElementById('runWalletManager').addEventListener('click', function() {
+            runScript('run_wallet_manager');
+        });
+        document.getElementById('runBatteryManager').addEventListener('click', function() {
+            runScript('run_battery_manager');
+        });
+    </script>
+    
+</body>
+</html>
