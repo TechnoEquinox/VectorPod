@@ -5,4 +5,7 @@ This is just currently a backup of all the work done so far. It's not pretty but
 
 robot_config.json and custom_page.html go under wire-pod/chipper/webroot/ to work properly
 
+2 systemd services:
+wire-pod.service and vector-flask.service
 
+The update was totally fine and once I restarted the systemd services everything worked great.
