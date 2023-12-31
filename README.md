@@ -9,3 +9,9 @@ robot_config.json and custom_page.html go under wire-pod/chipper/webroot/ to wor
 wire-pod.service and vector-flask.service
 
 The update was totally fine and once I restarted the systemd services everything worked great.
+
+Art Credits:
+
+QuinqueFive: https://ggbot.itch.io/quinquefive-font (Special Font Assets)
+
+TODO: Find link for Minifarm assets
