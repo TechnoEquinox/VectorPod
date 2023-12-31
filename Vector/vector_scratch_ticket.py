@@ -10,9 +10,15 @@ import random
 from datetime import datetime, timedelta
 from level_manager import LevelManager
 
+try:
+    from PIL import Image
+except ImportError:
+    sys.exit("Cannot import from PIL: Do `pip3 install --user Pillow` to install")
+
 class VectorScratchTicket():
     def __init__(self):
         self.required_energy: int = 5
+        self.display_number_timeout = 1.0
         self.lotto_number_count = 3
         self.min_jackpot: int = 100
         self.max_jackpot: int = 500
@@ -61,13 +67,35 @@ class VectorScratchTicket():
         print(f"Winning Numbers: {winning_numbers}")
         print(f"Robot Numbers: {robot_numbers}")
 
-        robot.behavior.say_text("Match all three numbers exactly to win the jackpot!")
-        robot.behavior.say_text(f"The winning numbers are {winning_numbers[0]}, {winning_numbers[1]}, and {winning_numbers[2]}.")
+        robot.behavior.say_text("Match all three numbers exactly to win the jackpot! The winning numbers are")
+        time.sleep(0.25)
+        robot.behavior.set_head_angle(degrees(45.0))
+
+        for index, element in enumerate(winning_numbers):
+            image_name = "font-" + str(element) + ".png"
+            image_path = "/home/connorbailey/VectorConfig/face_images/numbers/" + image_name
+            image_file = Image.open(image_path)
+            screen_data = anki_vector.screen.convert_image_to_screen_data(image_file)
+            robot.screen.set_screen_with_image_data(screen_data, self.display_number_timeout)
+            robot.behavior.say_text(f"{element}")
+            time.sleep(self.display_number_timeout)
+        
         robot.anim.play_animation_trigger('GreetAfterLongTime', ignore_body_track=True)
         robot.behavior.say_text(f"Good luck!")
-        robot.anim.play_animation_trigger("CubePounceGetReady", ignore_body_track=True)
+        robot.behavior.set_lift_height(0.3)
 
-        robot.behavior.say_text(f"Our tickets numbers are {robot_numbers[0]}, {robot_numbers[1]}, and {robot_numbers[2]}")
+        robot.behavior.say_text(f"Our tickets numbers are")
+        time.sleep(0.25)
+        robot.behavior.set_head_angle(degrees(45.0))
+
+        for index, element in enumerate(robot_numbers):
+            image_name = "font-" + str(element) + ".png"
+            image_path = "/home/connorbailey/VectorConfig/face_images/numbers/" + image_name
+            image_file = Image.open(image_path)
+            screen_data = anki_vector.screen.convert_image_to_screen_data(image_file)
+            robot.screen.set_screen_with_image_data(screen_data, self.display_number_timeout)
+            robot.behavior.say_text(f"{element}")
+            time.sleep(self.display_number_timeout)
 
         if winning_numbers == robot_numbers:
             jackpot_amount = self.get_jackpot()

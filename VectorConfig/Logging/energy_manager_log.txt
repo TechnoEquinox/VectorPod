@@ -136,3 +136,7 @@ Energy Increase: 20.0
 Max Energy: 115
 Energy Increase: 20.0
 Max Energy: 115
+Energy Increase: 20.0
+Max Energy: 115
+Energy Increase: 20.0
+Max Energy: 115
