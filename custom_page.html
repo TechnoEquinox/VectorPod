@@ -32,6 +32,39 @@
             margin: 0 10px;
         }
     </style>
+    <style>
+        .main-nav-child {
+            text-align: center; /* Center the button horizontally */
+            width: 100%; /* Full width to center properly */
+            display: flex; /* Use flexbox for vertical and horizontal centering */
+            justify-content: center; /* Center horizontally in flex container */
+            align-items: center; /* Center vertically in flex container */
+            height: 25vh; /* Full viewport height */
+        }
+
+        .extra-text {
+            text-align: center;
+            width: 100%;
+            display: flex; /* Use flexbox for vertical and horizontal centering */
+            justify-content: center; /* Center horizontally in flex container */
+            align-items: center; /* Center vertically in flex container */
+        }
+
+        #backButton {
+            background-color: transparent; /* Transparent background */
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            font-size: 16px;
+            color: gray; /* Gray text */
+        }
+
+        #backButton i {
+            color: gray; /* Gray icon */
+            font-size: 24px; /* Larger icon */
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
     <h1 id="robot-name"></h1>
@@ -54,24 +87,42 @@
             <label>XP:</label>
             <span id="robot-xp"></span>
         </div>
-    </div>
-
-    <h2>Interact</h2>
-
-    <div class="interact-buttons-container">
-        <button id="runLevelManager">Run Level Manager</button>
-        <button id="runGoForJog">Vector Go For Jog</button>
-        <button id="runWalletManager">Run Wallet Manager</button>
-        <button id="runBatteryManager">Run Battery Manager</button>
+        <div>
+            <label>Jog Distance:</label>
+            <span id="robot-jog-dist"></span> mi
+        </div>
     </div>
 
     <div class="output-toggle-container">
         <input type="checkbox" id="showOutputToggle">
         <label for="showOutputToggle">Show debug output</label>
-    </div>    
-    
-    <div class="container mt-5">
-        <button id="backButton" class="btn btn-secondary">Go Back</button>
+    </div>  
+
+    <h2>Activities</h2>
+
+    <div class="interact-buttons-container">
+        <button id="runGoForJog" class="btn btn-secondary"><i class="fa-solid fa-person-running" aria-hidden="true"></i><br>Go Jogging</button>
+        <button id="runScratchTicket" class="btn btn-secondary"><i class="fa-solid fa-ticket" aria-hidden="true"></i><br>Scratch Ticket</button>
+    </div>
+
+    <h2>Robot Settings</h2>
+
+    <div class="interact-buttons-container">
+        <button id="runLevelManager" class="btn btn-secondary"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i><br>Level Manager</button>
+        <button id="runWalletManager" class="btn btn-secondary"><i class="fa-solid fa-wallet" aria-hidden="true"></i><br>Wallet Manager</button>
+        <button id="runBatteryManager" class="btn btn-secondary"><i class="fa-solid fa-battery-half" aria-hidden="true"></i><br>Battery Manager</button>
+    </div>
+
+    <h2>Shop</h2>
+
+    <div class="extra-text">
+        <label>Coming Soon!</label>
+    </div>
+
+    <div class="main-nav-child">
+        <button id="backButton" class="btn btn-secondary">
+            <i class="fa-solid fa-reply" aria-hidden="true"></i><br>Back
+        </button>
     </div>
 
     <!-- Error Popup -->
@@ -96,6 +147,7 @@
             document.getElementById('robot-energy-level').textContent = `${data.robot_energy_level}/${maxEnergy} (+${energyPerHour}/hr)`;
             document.getElementById('robot-level').textContent = data.robot_level;
             document.getElementById('robot-xp').textContent = data.robot_xp;
+            document.getElementById('robot-jog-dist').textContent = `${((data.robot_total_jog_dist / 304.8) / 5280).toFixed(4)}`;
         })
         .catch(error => {
             console.error('Error fetching or parsing JSON:', error);
@@ -141,11 +193,12 @@
         document.getElementById('runLevelManager').addEventListener('click', function() {
             runScript('run_level_manager');
         });
-    
         document.getElementById('runGoForJog').addEventListener('click', function() {
             runScript('run_go_for_jog');
         });
-    
+        document.getElementById('runScratchTicket').addEventListener('click', function() {
+            runScript('run_scratch_ticket');
+        });
         document.getElementById('runWalletManager').addEventListener('click', function() {
             runScript('run_wallet_manager');
         });

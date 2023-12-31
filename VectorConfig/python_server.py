@@ -32,6 +32,11 @@ def run_go_for_jog():
     success, message = execute_script_in_venv("../Vector/vector_go_for_jog.py")
     return jsonify(success=success, message=message), 200 if success else 500
 
+@app.route('/run_scratch_ticket', methods=['POST'])
+def run_scratch_ticket():
+    success, message = execute_script_in_venv("../Vector/vector_scratch_ticket.py")
+    return jsonify(success=success, message=message), 200 if success else 500
+
 @app.route('/run_wallet_manager', methods=['POST'])
 def run_wallet_manager():
     success, message = execute_script_in_venv("../Vector/wallet_manager.py")

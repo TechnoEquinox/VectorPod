@@ -79,6 +79,7 @@ class VectorGoForJog():
         for _ in range(8):
             print("Drive Vector straight...")
             robot.behavior.drive_straight(distance_mm(125), speed_mmps(100))
+            robot_data["robot_total_jog_dist"] = robot_data["robot_total_jog_dist"] + 125
             
             self.find_money(data=robot_data, robot=robot)
 
