@@ -4,11 +4,10 @@ import anki_vector
 from anki_vector.util import degrees, distance_mm, speed_mmps
 import grpc
 from grpc._channel import _MultiThreadedRendezvous
-import json
 import time
 import random
 from datetime import datetime, timedelta
-from level_manager import LevelManager
+from vector_helpers import VectorHelpers
 
 try:
     from PIL import Image
@@ -22,25 +21,7 @@ class VectorScratchTicket():
         self.lotto_number_count = 3
         self.min_jackpot: int = 100
         self.max_jackpot: int = 500
-        self.robot_config_path: str = "../wire-pod/chipper/webroot/robot_config.json"
-
-    def read_json_file(self, filename):
-        with open(filename, 'r') as file:
-            data = json.load(file)
-        return data
-
-    def write_json_file(self, filename, data):
-        with open(filename, 'w') as file:
-            json.dump(data, file, indent=4)
-
-    def check_energy_level(self, robot_data):
-        if robot_data["robot_energy_level"] < self.required_energy:
-            return False
-        else:
-            return True
-    
-    def generate_xp(self):
-        return random.randint(1, 5)
+        self.helpers = VectorHelpers()
     
     def lotto_numbers(self):
         numbers = []
@@ -54,11 +35,6 @@ class VectorScratchTicket():
     
     def do_action(self, robot_data, robot):
         robot_data["robot_energy_level"] = robot_data["robot_energy_level"] - self.required_energy
-        earned_xp = self.generate_xp()
-        print(f"Previous XP: {robot_data['robot_xp']}")
-        print(f"Earned XP: {earned_xp}")
-        robot_data["robot_xp"] = robot_data["robot_xp"] + earned_xp
-        print(f"New XP: {robot_data['robot_xp']}")
 
         robot.behavior.drive_off_charger()
         winning_numbers = self.lotto_numbers()
@@ -100,7 +76,7 @@ class VectorScratchTicket():
         if winning_numbers == robot_numbers:
             jackpot_amount = self.get_jackpot()
             robot.anim.play_animation_trigger("BlackJack_VictorBlackJackLose", ignore_body_track=True)
-            robot.behavior.say_text(f"We win! Looks like we just won {jackpot_amount} coins! Let me put all these coins in my wallet.")
+            robot.behavior.say_text(f"We are rich! Looks like we just won {jackpot_amount} coins! Let me put all these coins in my wallet.")
             for count in range(5):
                 print(f"Count: {count}")
                 print("Lift down...")
@@ -111,20 +87,27 @@ class VectorScratchTicket():
                 time.sleep(0.5)
                 count += 1
             robot_data["robot_wallet"] = robot_data["robot_wallet"] + jackpot_amount
-            self.write_json_file(filename=self.robot_config_path, data=robot_data)
+            self.helpers.write_json_file(filename=self.robot_config_path, data=robot_data)
+            robot.behavior.say_text(f"That is amazing! There was only a 0.8% chance of that happening. I have goosebumps.")
         else:
             robot.behavior.say_text("We lost! Better luck next time.")
             robot.anim.play_animation_trigger("BlackJack_VictorWin", ignore_body_track=True)
-            self.write_json_file(filename=self.robot_config_path, data=robot_data)
+            self.helpers.write_json_file(data=robot_data)
+        
+
+        earned_xp = self.helpers.generate_xp(1, 1)
+        print(f"Earned XP: {earned_xp}")
+        robot.behavior.say_text(f"Ah. I also gained {earned_xp} experience point.")
+        self.helpers.update_xp_and_check_level(earned_xp, robot)
 
     def main(self):
         print("Reading robot config...")
-        robot_data = self.read_json_file(self.robot_config_path)
+        robot_data = self.helpers.read_json_file()
         print("Connecting to the robot...")
 
         try:
             with anki_vector.Robot(ip=robot_data["ip_address"], escape_pod=True) as robot:
-                if self.check_energy_level(robot_data=robot_data):
+                if self.helpers.check_energy_level(self.required_energy):
                     print("Checking for lottery ticket in inventory...")
                     # TODO: Check robot's inventory
                     robot.behavior.say_text("Let me get my lucky coin!")
