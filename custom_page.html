@@ -65,6 +65,55 @@
             margin-bottom: 5px;
         }
     </style>
+    <style>
+        .values-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    
+        .values-container > div {
+            padding: 0 15px;
+        }
+    
+        .interact-buttons-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+    
+        .interact-buttons-container button {
+            margin: 0 10px;
+        }
+    
+        /* Table styling */
+        #shop-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+    
+        #shop-table, #shop-table th, #shop-table td {
+            border: 1px solid gray;
+        }
+    
+        #shop-table th, #shop-table td {
+            text-align: left;
+            padding: 8px;
+        }
+    
+        #shop-table tr {
+            background-color: #ffffff; /* Make every row have a white background */
+        }
+    
+        #shop-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <h1 id="robot-name"></h1>
@@ -115,9 +164,20 @@
 
     <h2>Shop</h2>
 
-    <div class="extra-text">
-        <label>Coming Soon!</label>
-    </div>
+    <table id="shop-table">
+        <thead>
+            <tr>
+                <th>Icon</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Cost</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Items will be populated here -->
+        </tbody>
+    </table>
 
     <div class="main-nav-child">
         <button id="backButton" class="btn btn-secondary">
@@ -206,6 +266,41 @@
             runScript('run_battery_manager');
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('shop_items.json')
+            .then(response => response.json())
+            .then(data => populateShopTable(data))
+            .catch(error => console.error('Error loading shop items:', error));
+        });
     
+        function populateShopTable(items) {
+            const tableBody = document.getElementById('shop-table').getElementsByTagName('tbody')[0];
+            items.forEach(item => {
+                const row = tableBody.insertRow();
+                const iconCell = row.insertCell(0);
+                const titleCell = row.insertCell(1);
+                const descriptionCell = row.insertCell(2);
+                const costCell = row.insertCell(3);
+                const actionCell = row.insertCell(4);
+    
+                iconCell.innerHTML = `<img src="${item.path_to_icon}" alt="${item.title}" style="width:50px;">`;
+                titleCell.textContent = item.title;
+                descriptionCell.textContent = item.description;
+                costCell.textContent = item.cost + ' coins';
+    
+                const buyButton = document.createElement('button');
+                buyButton.textContent = 'Buy';
+                buyButton.addEventListener('click', () => buyItem(item.id));
+                actionCell.appendChild(buyButton);
+            });
+        }
+    
+        function buyItem(itemId) {
+            // Here you will handle the item purchase logic.
+            console.log(`Buying item with ID: ${itemId}`);
+            // Implement the fetch POST request to your server here.
+        }
+    </script>
 </body>
 </html>
