@@ -34,8 +34,7 @@ class VectorScratchTicket():
         return random.randint(self.min_jackpot, self.max_jackpot)
     
     def do_action(self, robot_data, robot):
-        robot_data["robot_energy_level"] = robot_data["robot_energy_level"] - self.required_energy
-
+        self.helpers.update_energy_level(self.required_energy)
         robot.behavior.drive_off_charger()
         winning_numbers = self.lotto_numbers()
         robot_numbers = self.lotto_numbers()
