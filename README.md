@@ -16,7 +16,7 @@ TODO: Find link for Minifarm assets, and find the author of the other assets as 
 
 ## Roadmap
 
-### v0.1.0 - **(Completed Dec 30, 2023)**
+### v0.1.0 - **(Completed Dec 27, 2023)**
 
 Show basic proof of concept of the idea. Create an interface to interact with Vector and build a flask service around this. 
 
