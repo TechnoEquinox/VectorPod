@@ -16,6 +16,8 @@ echo "----- vectormyboi Development Installer -----"
 
 echo -e "${YELLOW}Stopping wire-pod.service...${NC}"
 sudo systemctl stop wire-pod
+echo -e "${YELLOW}Stopping vector-flask.service...${NC}"
+sudo systemctl stop vector-flask
 
 echo -e "Removing existing vectormyboi directory..."
 if [ -d "$TARGET_DIR" ]; then
@@ -60,5 +62,7 @@ fi
 
 echo -e "${YELLOW}Starting wire-pod.service...${NC}"
 sudo systemctl start wire-pod
+echo -e "${YELLOW}Starting vector-flask.service...${NC}"
+sudo systemctl start vector-flask
 
 echo -e "${GREEN}Development installation completed successfully!${NC}"

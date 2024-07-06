@@ -35,7 +35,8 @@ class VectorScratchTicket():
         return random.randint(self.min_jackpot, self.max_jackpot)
     
     def do_action(self, robot_data, robot):
-        self.helpers.update_energy_level(self.required_energy)
+        robot_data["robot_energy_level"] = robot_data["robot_energy_level"] - self.required_energy
+        #self.helpers.update_energy_level(self.required_energy)
         robot.behavior.drive_off_charger()
         winning_numbers = self.lotto_numbers()
         robot_numbers = self.lotto_numbers()
@@ -49,7 +50,6 @@ class VectorScratchTicket():
 
         for index, element in enumerate(winning_numbers):
             image_name = "font-" + str(element) + ".png"
-            # image_path = "/home/connorbailey/VectorConfig/face_images/numbers/" + image_name
             image_path = os.path.join(os.path.expanduser("~"), 'wire-pod/chipper/plugins/vectormyboi/VectorConfig/face_images/numbers/') + image_name
             image_file = Image.open(image_path)
             screen_data = anki_vector.screen.convert_image_to_screen_data(image_file)
@@ -67,7 +67,6 @@ class VectorScratchTicket():
 
         for index, element in enumerate(robot_numbers):
             image_name = "font-" + str(element) + ".png"
-            # image_path = "/home/connorbailey/VectorConfig/face_images/numbers/" + image_name
             image_path = os.path.join(os.path.expanduser("~"), 'wire-pod/chipper/plugins/vectormyboi/VectorConfig/face_images/numbers/') + image_name
             image_file = Image.open(image_path)
             screen_data = anki_vector.screen.convert_image_to_screen_data(image_file)
@@ -106,6 +105,7 @@ class VectorScratchTicket():
         print("Reading robot config...")
         robot_data = self.helpers.read_json_file()
         print("Connecting to the robot...")
+        print(f"Robot has {robot_data['robot_energy_level']} energy")
 
         try:
             with anki_vector.Robot(ip=robot_data["ip_address"], escape_pod=True) as robot:
