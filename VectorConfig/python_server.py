@@ -1,12 +1,15 @@
+#!/usr/bin/env python3
+
 from flask import Flask, jsonify
 from flask_cors import CORS
 import subprocess
+import os
 
 app = Flask(__name__)
 CORS(app)
 
 def execute_script_in_venv(script_path):
-    venv_python_path = "/home/connorbailey/vector-venv/bin/python3"
+    venv_python_path = os.path.join(os.path.expanduser("~"), 'vector-venv/bin/python3')
     
     command = [
         venv_python_path,

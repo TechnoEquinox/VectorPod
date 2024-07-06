@@ -20,6 +20,7 @@ TARGET_DIR="$WIREPOD_PLUGIN_DIR/vectormyboi"
 WEBROOT="$WIREPOD_DIR/chipper/webroot"
 PROJ_DIR="$HOME/vectormyboi"
 VENV_DIR="$HOME/vector-venv"
+SERVICE_FILE_PATH="/etc/systemd/system/python_server.service"
 
 echo "----- vectormyboi Plug-In Installer -----"
 echo -e "Created by: TechnoEquinox\tCreated on: 07-06-2024\tLast updated: 07-06-2024"
@@ -178,6 +179,33 @@ else
     echo -e "${RED}ERROR: Failed to add environment variable.${NC}"
     exit 1
 fi
+
+# Define the systemd service file content
+SERVICE_FILE_CONTENT="[Unit]
+Description=VectorMyBoi Python Server
+After=network.target
+
+[Service]
+User=$(whoami)
+WorkingDirectory=$TARGET_DIR/VectorConfig/
+ExecStart=$HOME/vector-venv/bin/python3 $TARGET_DIR/VectorConfig/python_server.py
+Environment=\"PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python\"
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+"
+
+# Write the service file
+echo "Creating systemd service file at $SERVICE_FILE_PATH..."
+echo "$SERVICE_FILE_CONTENT" | sudo tee $SERVICE_FILE_PATH > /dev/null
+
+# Reload systemd to recognize the new service, enable it, and start it
+echo -e "${YELLOW}Reloading systemd, enabling and starting the python_server service...${NC}"
+sudo systemctl daemon-reload
+sudo systemctl enable python_server.service
+sudo systemctl start python_server.service
+echo -e "${GREEN}Python server service has been set up and started successfully.${NC}"
 
 cd $WIREPOD_DIR
 echo "Enabling the wire-pod daemon..."
