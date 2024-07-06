@@ -32,6 +32,88 @@
             margin: 0 10px;
         }
     </style>
+    <style>
+        .main-nav-child {
+            text-align: center; /* Center the button horizontally */
+            width: 100%; /* Full width to center properly */
+            display: flex; /* Use flexbox for vertical and horizontal centering */
+            justify-content: center; /* Center horizontally in flex container */
+            align-items: center; /* Center vertically in flex container */
+            height: 25vh; /* Full viewport height */
+        }
+
+        .extra-text {
+            text-align: center;
+            width: 100%;
+            display: flex; /* Use flexbox for vertical and horizontal centering */
+            justify-content: center; /* Center horizontally in flex container */
+            align-items: center; /* Center vertically in flex container */
+        }
+
+        #backButton {
+            background-color: transparent; /* Transparent background */
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            font-size: 16px;
+            color: gray; /* Gray text */
+        }
+
+        #backButton i {
+            color: gray; /* Gray icon */
+            font-size: 24px; /* Larger icon */
+            margin-bottom: 5px;
+        }
+    </style>
+    <style>
+        .values-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    
+        .values-container > div {
+            padding: 0 15px;
+        }
+    
+        .interact-buttons-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+    
+        .interact-buttons-container button {
+            margin: 0 10px;
+        }
+    
+        /* Table styling */
+        #shop-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+    
+        #shop-table, #shop-table th, #shop-table td {
+            border: 1px solid gray;
+        }
+    
+        #shop-table th, #shop-table td {
+            text-align: left;
+            padding: 8px;
+        }
+    
+        #shop-table tr {
+            background-color: #ffffff; /* Make every row have a white background */
+        }
+    
+        #shop-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <h1 id="robot-name"></h1>
@@ -54,24 +136,53 @@
             <label>XP:</label>
             <span id="robot-xp"></span>
         </div>
-    </div>
-
-    <h2>Interact</h2>
-
-    <div class="interact-buttons-container">
-        <button id="runLevelManager">Run Level Manager</button>
-        <button id="runGoForJog">Vector Go For Jog</button>
-        <button id="runWalletManager">Run Wallet Manager</button>
-        <button id="runBatteryManager">Run Battery Manager</button>
+        <div>
+            <label>Jog Distance:</label>
+            <span id="robot-jog-dist"></span> mi
+        </div>
     </div>
 
     <div class="output-toggle-container">
         <input type="checkbox" id="showOutputToggle">
         <label for="showOutputToggle">Show debug output</label>
-    </div>    
-    
-    <div class="container mt-5">
-        <button id="backButton" class="btn btn-secondary">Go Back</button>
+    </div>  
+
+    <h2>Activities</h2>
+
+    <div class="interact-buttons-container">
+        <button id="runGoForJog" class="btn btn-secondary"><i class="fa-solid fa-person-running" aria-hidden="true"></i><br>Go Jogging</button>
+        <button id="runScratchTicket" class="btn btn-secondary"><i class="fa-solid fa-ticket" aria-hidden="true"></i><br>Scratch Ticket</button>
+    </div>
+
+    <h2>Robot Settings</h2>
+
+    <div class="interact-buttons-container">
+        <button id="runLevelManager" class="btn btn-secondary"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i><br>Level Manager</button>
+        <button id="runWalletManager" class="btn btn-secondary"><i class="fa-solid fa-wallet" aria-hidden="true"></i><br>Wallet Manager</button>
+        <button id="runBatteryManager" class="btn btn-secondary"><i class="fa-solid fa-battery-half" aria-hidden="true"></i><br>Battery Manager</button>
+    </div>
+
+    <h2>Shop</h2>
+
+    <table id="shop-table">
+        <thead>
+            <tr>
+                <th>Icon</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Cost</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Items will be populated here -->
+        </tbody>
+    </table>
+
+    <div class="main-nav-child">
+        <button id="backButton" class="btn btn-secondary">
+            <i class="fa-solid fa-reply" aria-hidden="true"></i><br>Back
+        </button>
     </div>
 
     <!-- Error Popup -->
@@ -96,6 +207,7 @@
             document.getElementById('robot-energy-level').textContent = `${data.robot_energy_level}/${maxEnergy} (+${energyPerHour}/hr)`;
             document.getElementById('robot-level').textContent = data.robot_level;
             document.getElementById('robot-xp').textContent = data.robot_xp;
+            document.getElementById('robot-jog-dist').textContent = `${((data.robot_total_jog_dist / 304.8) / 5280).toFixed(4)}`;
         })
         .catch(error => {
             console.error('Error fetching or parsing JSON:', error);
@@ -141,11 +253,12 @@
         document.getElementById('runLevelManager').addEventListener('click', function() {
             runScript('run_level_manager');
         });
-    
         document.getElementById('runGoForJog').addEventListener('click', function() {
             runScript('run_go_for_jog');
         });
-    
+        document.getElementById('runScratchTicket').addEventListener('click', function() {
+            runScript('run_scratch_ticket');
+        });
         document.getElementById('runWalletManager').addEventListener('click', function() {
             runScript('run_wallet_manager');
         });
@@ -153,6 +266,41 @@
             runScript('run_battery_manager');
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('shop_items.json')
+            .then(response => response.json())
+            .then(data => populateShopTable(data))
+            .catch(error => console.error('Error loading shop items:', error));
+        });
     
+        function populateShopTable(items) {
+            const tableBody = document.getElementById('shop-table').getElementsByTagName('tbody')[0];
+            items.forEach(item => {
+                const row = tableBody.insertRow();
+                const iconCell = row.insertCell(0);
+                const titleCell = row.insertCell(1);
+                const descriptionCell = row.insertCell(2);
+                const costCell = row.insertCell(3);
+                const actionCell = row.insertCell(4);
+    
+                iconCell.innerHTML = `<img src="${item.path_to_icon}" alt="${item.title}" style="width:50px;">`;
+                titleCell.textContent = item.title;
+                descriptionCell.textContent = item.description;
+                costCell.textContent = item.cost + ' coins';
+    
+                const buyButton = document.createElement('button');
+                buyButton.textContent = 'Buy';
+                buyButton.addEventListener('click', () => buyItem(item.id));
+                actionCell.appendChild(buyButton);
+            });
+        }
+    
+        function buyItem(itemId) {
+            // Here you will handle the item purchase logic.
+            console.log(`Buying item with ID: ${itemId}`);
+            // Implement the fetch POST request to your server here.
+        }
+    </script>
 </body>
 </html>
