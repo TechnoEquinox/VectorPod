@@ -1,4 +1,4 @@
-#!/home/connorbailey/vector-venv/bin/python3
+#!/usr/bin/env python3
 
 import anki_vector
 from anki_vector.util import degrees, distance_mm, speed_mmps
@@ -8,6 +8,7 @@ import time
 import random
 from datetime import datetime, timedelta
 from vector_helpers import VectorHelpers
+import os
 
 try:
     from PIL import Image
@@ -48,7 +49,8 @@ class VectorScratchTicket():
 
         for index, element in enumerate(winning_numbers):
             image_name = "font-" + str(element) + ".png"
-            image_path = "/home/connorbailey/VectorConfig/face_images/numbers/" + image_name
+            # image_path = "/home/connorbailey/VectorConfig/face_images/numbers/" + image_name
+            image_path = os.path.join(os.path.expanduser("~"), 'wire-pod/chipper/plugins/vectormyboi/VectorConfig/face_images/numbers/') + image_name
             image_file = Image.open(image_path)
             screen_data = anki_vector.screen.convert_image_to_screen_data(image_file)
             robot.screen.set_screen_with_image_data(screen_data, self.display_number_timeout)
@@ -65,7 +67,8 @@ class VectorScratchTicket():
 
         for index, element in enumerate(robot_numbers):
             image_name = "font-" + str(element) + ".png"
-            image_path = "/home/connorbailey/VectorConfig/face_images/numbers/" + image_name
+            # image_path = "/home/connorbailey/VectorConfig/face_images/numbers/" + image_name
+            image_path = os.path.join(os.path.expanduser("~"), 'wire-pod/chipper/plugins/vectormyboi/VectorConfig/face_images/numbers/') + image_name
             image_file = Image.open(image_path)
             screen_data = anki_vector.screen.convert_image_to_screen_data(image_file)
             robot.screen.set_screen_with_image_data(screen_data, self.display_number_timeout)

@@ -1,13 +1,14 @@
-#!/home/connorbailey/vector-venv/bin/python3
+#!/usr/bin/env python3
 
 import anki_vector
 import grpc
 from grpc._channel import _MultiThreadedRendezvous
 import json
+import os
 
 class WalletManager():
     def __init__(self):
-        self.robot_config_path: str = "../wire-pod/chipper/webroot/robot_config.json"
+        self.robot_config_path = os.path.join(os.path.expanduser("~"), 'wire-pod/chipper/webroot/robot_config.json')
 
     def read_json_file(self, filename):
         with open(filename, 'r') as file:

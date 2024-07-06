@@ -1,4 +1,7 @@
+#!/usr/bin/env python3
+
 import json
+import os
 
 # Define a ShopItem class to hold item details
 class ShopItem:
@@ -39,7 +42,8 @@ class Shop:
 
 # Load robot data from JSON
 def load_robot_data():
-    with open('../VectorConfig/robot_config.json', 'r') as file:
+    path = os.path.join(os.path.expanduser("~"), 'wire-pod/chipper/webroot/robot_config.json')
+    with open(path, 'r') as file:
         return json.load(file)
 
 def main():

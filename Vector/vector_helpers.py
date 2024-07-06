@@ -1,17 +1,20 @@
+#!/usr/bin/env python3
+
 import json
 import random
 from datetime import datetime, timedelta
+import os
 
 class VectorHelpers:
     def __init__(self):
-        self.config_path = "../wire-pod/chipper/webroot/robot_config.json"
+        self.robot_config_path = os.path.join(os.path.expanduser("~"), 'wire-pod/chipper/webroot/robot_config.json')
 
     def read_json_file(self):
-        with open(self.config_path, 'r') as file:
+        with open(self.robot_config_path, 'r') as file:
             return json.load(file)
 
     def write_json_file(self, data):
-        with open(self.config_path, 'w') as file:
+        with open(self.robot_config_path, 'w') as file:
             json.dump(data, file, indent=4)
 
     def check_energy_level(self, required_energy):

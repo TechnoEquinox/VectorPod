@@ -19,11 +19,12 @@ WIREPOD_PLUGIN_DIR="$WIREPOD_DIR/chipper/plugins"
 TARGET_DIR="$WIREPOD_PLUGIN_DIR/vectormyboi"
 WEBROOT="$WIREPOD_DIR/chipper/webroot"
 PROJ_DIR="$HOME/vectormyboi"
+VENV_DIR="$HOME/vector-venv"
 
 echo "----- vectormyboi Plug-In Installer -----"
 echo -e "Created by: TechnoEquinox\tCreated on: 07-06-2024\tLast updated: 07-06-2024"
 
-echo "\nVerifying cron installation..."
+echo -e "\nVerifying cron installation..."
 if command -v cron >/dev/null 2>&1 || command -v crond >/dev/null 2>&1; then
     echo -e "${GREEN}Cron is installed.${NC}"
 else
@@ -133,6 +134,49 @@ if [ $? -ne 0 ]; then
     echo -e "${GREEN}Successfully added cron job.${NC}"
 else
     echo -e "${YELLOW}Cron job already exists. No changes made.${NC}"
+fi
+
+# venv and Python package installation
+echo "Checking if Python venv already exists in $HOME ..."
+if [ -d "$VENV_DIR" ]; then
+    echo -e "${YELLOW}Python venv already exists. No changes made.${NC}"
+else
+    echo -e "${YELLOW}Python venv does not exist. Creating it now...${NC}"
+    python3 -m venv "$VENV_DIR"
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}Successfully created Python venv.${NC}"
+        echo "Activating virtual environment..."
+        source "$VENV_DIR/bin/activate"
+        if [ $? -eq 0 ]; then
+            echo -e "${GREEN}Successfully activated virtual environment.${NC}"
+            echo "Installing required Python packages..."
+            pip install -r "$PROJ_DIR/requirements.txt"
+            if [ $? -eq 0 ]; then
+                echo -e "${GREEN}Successfully installed required Python packages.${NC}"
+            else
+                echo -e "${RED}ERROR: Failed to install required Python packages.${NC}"
+                deactivate
+                exit 1
+            fi
+            deactivate
+        else
+            echo -e "${RED}ERROR: Failed to activate virtual environment.${NC}"
+            exit 1
+        fi
+    else
+        echo -e "${RED}ERROR: Failed to create Python venv.${NC}"
+        exit 1
+    fi
+fi
+
+# Add environment variable to venv activate script
+echo "Adding PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION environment variable to venv..."
+echo 'export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python' >> "$VENV_DIR/bin/activate"
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}Successfully added environment variable.${NC}"
+else
+    echo -e "${RED}ERROR: Failed to add environment variable.${NC}"
+    exit 1
 fi
 
 cd $WIREPOD_DIR

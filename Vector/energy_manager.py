@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import json
 import os
 
@@ -6,7 +8,8 @@ import os
     This script is run every hour in a cronjob :)
 """
 # Path to the config file
-CONFIG_PATH = os.path.expanduser('~/wire-pod/chipper/webroot/robot_config.json')
+# CONFIG_PATH = os.path.expanduser('~/wire-pod/chipper/webroot/robot_config.json')
+CONFIG_PATH = os.path.join(os.path.expanduser("~"), 'wire-pod/chipper/webroot/robot_config.json')
 
 def modify_energy_level(data):
     """
