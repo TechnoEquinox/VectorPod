@@ -10,8 +10,12 @@ NC='\033[0m' # No Color
 WIREPOD_PLUGIN_DIR="$HOME/wire-pod/chipper/plugins"
 TARGET_DIR="$WIREPOD_PLUGIN_DIR/vectormyboi"
 PROJ_DIR="$HOME/vectormyboi"
+WEBROOT="$HOME/wire-pod/chipper/webroot"
 
 echo "----- vectormyboi Development Installer -----"
+
+echo -e "${YELLOW}Stopping wire-pod.service...${NC}"
+sudo systemctl stop wire-pod
 
 echo -e "Removing existing vectormyboi directory..."
 if [ -d "$TARGET_DIR" ]; then
@@ -44,5 +48,17 @@ else
     echo -e "${RED}ERROR: Failed to move contents to vectormyboi directory.${NC}"
     exit 1
 fi
+
+echo "Applying changes to custom_page.html and index.html..."
+sudo cp "$PROJ_DIR/custom_page.html" "$PROJ_DIR/index.html" "$WEBROOT"
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}Successfully moved custom_page.html and index.html into $WEBROOT.${NC}"
+else
+    echo -e "${RED}ERROR: Failed to move custom_page.html and index.html into $WEBROOT.${NC}"
+    exit 1
+fi
+
+echo -e "${YELLOW}Starting wire-pod.service...${NC}"
+sudo systemctl start wire-pod
 
 echo -e "${GREEN}Development installation completed successfully!${NC}"

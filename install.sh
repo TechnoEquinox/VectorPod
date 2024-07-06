@@ -111,8 +111,8 @@ else
     exit 1
 fi
 
-echo "Installing configs to ${WEBROOT}"
-cp robot_config.json shop_items.json custom_page.html $WEBROOT # TODO: Also move index.html, or find a way to modify the existing index.html in wirepod.
+echo "Installing files to ${WEBROOT}"
+sudo cp robot_config.json shop_items.json custom_page.html index.html $WEBROOT
 if [ -f "$WEBROOT/robot_config.json" ] && [ -f "$WEBROOT/shop_items.json" ] && [ -f "$WEBROOT/custom_page.html" ]; then
     echo -e "${GREEN}Successfully installed configs to ${WEBROOT}.${NC}"
 else
