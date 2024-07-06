@@ -2,15 +2,11 @@
     "robotSerial": "00304324",
     "ip_address": "192.168.50.46",
     "robot_name": "Vector N9N4",
-    "robot_wallet": 257,
-    "robot_energy_level": 75.0,
-    "robot_level": 4,
-    "robot_xp": 240,
-    "last_jog": "2023-12-30T23:26:09",
-    "robot_total_jog_dist": 6000,
-    "items": [
-        "Juice Box",
-        "Wild Grass Seed",
-        "Sunflower"
-    ]
+    "robot_wallet": 137,
+    "robot_energy_level": 120,
+    "robot_level": 5,
+    "robot_xp": 342,
+    "last_jog": "2024-04-16T18:21:36",
+    "robot_total_jog_dist": 19000,
+    "items": []
 }

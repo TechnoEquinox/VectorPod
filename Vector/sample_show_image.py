@@ -38,8 +38,7 @@ def main():
         robot.behavior.set_head_angle(degrees(45.0))
         robot.behavior.set_lift_height(0.0)
 
-        # target_path = "/home/connorbailey/VectorConfig/face_images/cozmo_image.jpg"
-        target_path = "/home/connorbailey/VectorConfig/face_images/numbers/font-1.png"
+        target_path = os.path.join(os.path.expanduser("~"), 'wire-pod/chipper/plugins/vectormyboi/VectorConfig/face_images/numbers/font-1.png')
 
         # Load an image
         image_file = Image.open(target_path)

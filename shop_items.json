@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "title": "Lottery Ticket",
+        "description": "Try your luck to win big! Match the three numbers on your ticket with the winning numbers to win up to 500 coins.",
+        "cost": 5,
+        "min_level_required": 1,
+        "path_to_icon": "assets/lotto_ticket.jpg"
+    },
+    {
+        "id": 2,
+        "title": "Energy Drink",
+        "description": "Drink to replenish 50 energy.",
+        "cost": 10,
+        "min_level_required": 1,
+        "path_to_icon": "assets/can_14.png"
+    }
+]

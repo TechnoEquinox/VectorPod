@@ -1,13 +1,14 @@
-#!/home/connorbailey/vector-venv/bin/python3
+#!/usr/bin/env python3
 
 import anki_vector
 import grpc
 from grpc._channel import _MultiThreadedRendezvous
 import json
+import os
 
 class LevelManager():
     def __init__(self):
-        self.robot_config_path: str = "../wire-pod/chipper/webroot/robot_config.json"
+        self.robot_config_path = os.path.join(os.path.expanduser("~"), 'wire-pod/chipper/webroot/robot_config.json')
         self.levels: [int] = [0, 1, 40, 82, 168, 334, 684, 1402, 2874, 5891, 12076]
 
     def read_json_file(self, filename):
