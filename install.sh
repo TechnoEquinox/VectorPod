@@ -20,7 +20,7 @@ TARGET_DIR="$WIREPOD_PLUGIN_DIR/vectormyboi"
 WEBROOT="$WIREPOD_DIR/chipper/webroot"
 PROJ_DIR="$HOME/vectormyboi"
 VENV_DIR="$HOME/vector-venv"
-SERVICE_FILE_PATH="/etc/systemd/system/python_server.service"
+SERVICE_FILE_PATH="/etc/systemd/system/vector-flask.service"
 
 echo "----- vectormyboi Plug-In Installer -----"
 echo -e "Created by: TechnoEquinox\tCreated on: 07-06-2024\tLast updated: 07-06-2024"
@@ -201,10 +201,10 @@ echo "Creating systemd service file at $SERVICE_FILE_PATH..."
 echo "$SERVICE_FILE_CONTENT" | sudo tee $SERVICE_FILE_PATH > /dev/null
 
 # Reload systemd to recognize the new service, enable it, and start it
-echo -e "${YELLOW}Reloading systemd, enabling and starting the python_server service...${NC}"
+echo -e "${YELLOW}Reloading systemd, enabling and starting the vector-flask service...${NC}"
 sudo systemctl daemon-reload
-sudo systemctl enable python_server.service
-sudo systemctl start python_server.service
+sudo systemctl enable vector-flask.service
+sudo systemctl start vector-flask.service
 echo -e "${GREEN}Python server service has been set up and started successfully.${NC}"
 
 cd $WIREPOD_DIR

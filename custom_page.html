@@ -7,6 +7,12 @@
     <script src="https://kit.fontawesome.com/8cdc8cbed9.js" crossorigin="anonymous"></script>
 
     <style>
+        .container {
+            max-width: 1200px; /* Adjust the max width as needed */
+            margin: 0 auto; /* Center the container */
+            padding: 0 20px; /* Optional padding */
+        }
+
         .values-container {
             display: flex;
             justify-content: space-around;
@@ -15,24 +21,25 @@
             border-bottom: 2px solid #000; /* This is the divider below the values */
             margin-top: 20px;
             margin-bottom: 20px;
+            text-align: center;
         }
 
         .values-container > div {
             padding: 0 15px; /* Adjusted the padding for more space between label and values */
         }
-    </style>
-    <style>
+
         .interact-buttons-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             margin-bottom: 20px;
         }
-    
+
         .interact-buttons-container button {
             margin: 0 10px;
+            padding: 10px 20px; /* Adjust padding to ensure text fits */
+            font-size: 16px; /* Adjust font size if needed */
         }
-    </style>
-    <style>
+
         .main-nav-child {
             text-align: center; /* Center the button horizontally */
             width: 100%; /* Full width to center properly */
@@ -64,131 +71,131 @@
             font-size: 24px; /* Larger icon */
             margin-bottom: 5px;
         }
-    </style>
-    <style>
-        .values-container {
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-top: 2px solid #000;
-            border-bottom: 2px solid #000;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-    
-        .values-container > div {
-            padding: 0 15px;
-        }
-    
-        .interact-buttons-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-    
-        .interact-buttons-container button {
-            margin: 0 10px;
-        }
-    
+
         /* Table styling */
         #shop-table {
             width: 100%;
             border-collapse: collapse;
         }
-    
+
         #shop-table, #shop-table th, #shop-table td {
             border: 1px solid gray;
         }
-    
+
         #shop-table th, #shop-table td {
             text-align: left;
             padding: 8px;
         }
-    
+
         #shop-table tr {
             background-color: #ffffff; /* Make every row have a white background */
         }
-    
+
         #shop-table th {
             background-color: #4CAF50;
             color: white;
         }
+
+        .section {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .section-title {
+            margin-bottom: 12px;
+        }
+
+        .output-toggle-container {
+            text-align: left;
+            margin-left: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
-    <h1 id="robot-name"></h1>
-    
-    <!-- Horizontal Values Display -->
-    <div class="values-container">
-        <div>
-            <label>Wallet:</label>
-            <span id="robot-wallet"></span> coins
+    <div class="container">
+        <div class="section extra-text">
+            <h1 id="robot-name"></h1>
         </div>
-        <div>
-            <label>Energy Level:</label>
-            <span id="robot-energy-level"></span>
+        
+        <!-- Horizontal Values Display -->
+        <div class="section values-container">
+            <div>
+                <label>Wallet:</label>
+                <span id="robot-wallet"></span> coins
+            </div>
+            <div>
+                <label>Energy Level:</label>
+                <span id="robot-energy-level"></span>
+            </div>
+            <div>
+                <label>Level:</label>
+                <span id="robot-level"></span>
+            </div>
+            <div>
+                <label>XP:</label>
+                <span id="robot-xp"></span>
+            </div>
+            <div>
+                <label>Jog Distance:</label>
+                <span id="robot-jog-dist"></span> mi
+            </div>
         </div>
-        <div>
-            <label>Level:</label>
-            <span id="robot-level"></span>
+
+        <div class="output-toggle-container">
+            <input type="checkbox" id="showOutputToggle">
+            <label for="showOutputToggle">Show debug output</label>
         </div>
-        <div>
-            <label>XP:</label>
-            <span id="robot-xp"></span>
+
+        <div class="section">
+            <h2 class="section-title">Activities</h2>
+            <div class="interact-buttons-container">
+                <button id="runGoForJog" class="btn btn-secondary"><i class="fa-solid fa-person-running" aria-hidden="true"></i><br>Go Jogging</button>
+                <button id="runScratchTicket" class="btn btn-secondary"><i class="fa-solid fa-ticket" aria-hidden="true"></i><br>Scratch Ticket</button>
+            </div>
         </div>
-        <div>
-            <label>Jog Distance:</label>
-            <span id="robot-jog-dist"></span> mi
+
+        <div class="section">
+            <h2 class="section-title">Robot Settings</h2>
+            <div class="interact-buttons-container">
+                <button id="runLevelManager" class="btn btn-secondary"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i><br>Level Manager</button>
+                <button id="runWalletManager" class="btn btn-secondary"><i class="fa-solid fa-wallet" aria-hidden="true"></i><br>Wallet Manager</button>
+                <button id="runBatteryManager" class="btn btn-secondary"><i class="fa-solid fa-battery-half" aria-hidden="true"></i><br>Battery Manager</button>
+            </div>
         </div>
-    </div>
 
-    <div class="output-toggle-container">
-        <input type="checkbox" id="showOutputToggle">
-        <label for="showOutputToggle">Show debug output</label>
-    </div>  
+        <div class="section">
+            <h2 class="section-title">Shop</h2>
+            <table id="shop-table">
+                <thead>
+                    <tr>
+                        <th>Icon</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Cost</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Items will be populated here -->
+                </tbody>
+            </table>
+        </div>
 
-    <h2>Activities</h2>
+        <div class="main-nav-child">
+            <button id="backButton" class="btn btn-secondary">
+                <i class="fa-solid fa-reply" aria-hidden="true"></i><br>Back
+            </button>
+        </div>
 
-    <div class="interact-buttons-container">
-        <button id="runGoForJog" class="btn btn-secondary"><i class="fa-solid fa-person-running" aria-hidden="true"></i><br>Go Jogging</button>
-        <button id="runScratchTicket" class="btn btn-secondary"><i class="fa-solid fa-ticket" aria-hidden="true"></i><br>Scratch Ticket</button>
-    </div>
-
-    <h2>Robot Settings</h2>
-
-    <div class="interact-buttons-container">
-        <button id="runLevelManager" class="btn btn-secondary"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i><br>Level Manager</button>
-        <button id="runWalletManager" class="btn btn-secondary"><i class="fa-solid fa-wallet" aria-hidden="true"></i><br>Wallet Manager</button>
-        <button id="runBatteryManager" class="btn btn-secondary"><i class="fa-solid fa-battery-half" aria-hidden="true"></i><br>Battery Manager</button>
-    </div>
-
-    <h2>Shop</h2>
-
-    <table id="shop-table">
-        <thead>
-            <tr>
-                <th>Icon</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Cost</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Items will be populated here -->
-        </tbody>
-    </table>
-
-    <div class="main-nav-child">
-        <button id="backButton" class="btn btn-secondary">
-            <i class="fa-solid fa-reply" aria-hidden="true"></i><br>Back
-        </button>
-    </div>
-
-    <!-- Error Popup -->
-    <div id="errorPopup" style="display: none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 20px; background-color: #f44336; color: white; z-index: 1000;">
-        An error occurred! 
-        <button onclick="closePopup()">Dismiss</button>
+        <!-- Error Popup -->
+        <div id="errorPopup" style="display: none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 20px; background-color: #f44336; color: white; z-index: 1000;">
+            An error occurred! 
+            <button onclick="closePopup()">Dismiss</button>
+        </div>
     </div>
     
     <script>
