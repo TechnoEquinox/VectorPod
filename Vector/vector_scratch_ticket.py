@@ -105,15 +105,20 @@ class VectorScratchTicket():
         print("Reading robot config...")
         robot_data = self.helpers.read_json_file()
         print("Connecting to the robot...")
-        print(f"Robot has {robot_data['robot_energy_level']} energy")
 
         try:
             with anki_vector.Robot(ip=robot_data["ip_address"], escape_pod=True) as robot:
                 if self.helpers.check_energy_level(self.required_energy):
                     print("Checking for lottery ticket in inventory...")
-                    # TODO: Check robot's inventory
-                    robot.behavior.say_text("Let me get my lucky coin!")
-                    self.do_action(robot_data=robot_data, robot=robot)
+                    lottery_ticket_id = 1
+                    if lottery_ticket_id in robot_data["items"]:
+                        print("Lottery ticket found in inventory.")
+                        robot_data["items"].remove(lottery_ticket_id)
+                        robot.behavior.say_text("Let me get my lucky coin!")
+                        self.do_action(robot_data=robot_data, robot=robot)
+                    else:
+                        print("Lottery ticket not found in inventory.")
+                        robot.behavior.say_text("Hey! I need a lottery ticket to perform this activity.")
                 else:
                     robot.behavior.say_text(f"I'm tired, I need {self.required_energy} energy to do that")  
         except grpc._channel._InactiveRpcError as e:
