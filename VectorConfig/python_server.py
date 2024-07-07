@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import subprocess
 import os
 import logging
+from shop_handler import ShopHandler
 
 app = Flask(__name__)
 CORS(app)
+
+shop_handler = ShopHandler()
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -65,6 +68,13 @@ def run_battery_manager():
     script_path = os.path.join(os.path.expanduser("~"), "wire-pod/chipper/plugins/vectormyboi/Vector/battery_manager.py")
     logging.debug(f"Script path: {script_path}")
     success, message = execute_script_in_venv(script_path)
+    return jsonify(success=success, message=message), 200 if success else 500
+
+@app.route('/buy_item', methods=['POST'])
+def buy_item():
+    data = request.get_json()
+    item_id = data.get('item_id')
+    success, message = shop_handler.handle_purchase(item_id)
     return jsonify(success=success, message=message), 200 if success else 500
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Vector Life Test</title>
+    <title>vectormyboi v0.2.2 (Dev)</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/8cdc8cbed9.js" crossorigin="anonymous"></script>
@@ -22,7 +22,7 @@
             margin-top: 20px;
             margin-bottom: 20px;
             text-align: center;
-            color: gray;
+            color: gray; /* Change text color to gray */
         }
 
         .values-container > div {
@@ -220,68 +220,14 @@
         .catch(error => {
             console.error('Error fetching or parsing JSON:', error);
         });
-    </script>
-    <script>
-        // Popup control functions
-        function showErrorPopup() {
-            document.getElementById('errorPopup').style.display = 'block';
-        }
 
-        function closePopup() {
-            document.getElementById('errorPopup').style.display = 'none';
-        }
-
-        function runScript(endpoint) {
-            fetch('http://192.168.50.123:8091/' + endpoint, {
-                method: 'POST'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    if (response.status === 500) {
-                        showErrorPopup('An error occurred while executing the script.');
-                    }
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    const showOutput = document.getElementById('showOutputToggle').checked;
-                    if (showOutput) {
-                        alert(data.message);  // Display the print statements from the Python script.
-                    }
-                } 
-            })
-            .catch(error => {
-                console.error('Error executing the script:', error);
-            });
-        }
-
-    
-        document.getElementById('runLevelManager').addEventListener('click', function() {
-            runScript('run_level_manager');
-        });
-        document.getElementById('runGoForJog').addEventListener('click', function() {
-            runScript('run_go_for_jog');
-        });
-        document.getElementById('runScratchTicket').addEventListener('click', function() {
-            runScript('run_scratch_ticket');
-        });
-        document.getElementById('runWalletManager').addEventListener('click', function() {
-            runScript('run_wallet_manager');
-        });
-        document.getElementById('runBatteryManager').addEventListener('click', function() {
-            runScript('run_battery_manager');
-        });
-    </script>
-    <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetch('shop_items.json')
             .then(response => response.json())
             .then(data => populateShopTable(data))
             .catch(error => console.error('Error loading shop items:', error));
         });
-    
+
         function populateShopTable(items) {
             const tableBody = document.getElementById('shop-table').getElementsByTagName('tbody')[0];
             items.forEach(item => {
@@ -291,23 +237,47 @@
                 const descriptionCell = row.insertCell(2);
                 const costCell = row.insertCell(3);
                 const actionCell = row.insertCell(4);
-    
+
                 iconCell.innerHTML = `<img src="${item.path_to_icon}" alt="${item.title}" style="width:50px;">`;
                 titleCell.textContent = item.title;
                 descriptionCell.textContent = item.description;
                 costCell.textContent = item.cost + ' coins';
-    
+
                 const buyButton = document.createElement('button');
                 buyButton.textContent = 'Buy';
                 buyButton.addEventListener('click', () => buyItem(item.id));
                 actionCell.appendChild(buyButton);
             });
         }
-    
+
         function buyItem(itemId) {
-            // Here you will handle the item purchase logic.
-            console.log(`Buying item with ID: ${itemId}`);
-            // Implement the fetch POST request to your server here.
+            fetch('http://192.168.50.123:8091/buy_item', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ item_id: itemId })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 500) {
+                        showErrorPopup('An error occurred while processing the purchase. Try again.');
+                    }
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Purchase successful!');
+                    location.reload();
+                } else {
+                    alert('Purchase failed: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error processing the purchase:', error);
+            });
         }
     </script>
 </body>
