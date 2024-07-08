@@ -37,7 +37,7 @@ class VectorGoForJog():
             self.helpers.write_json_file(data)
     
     def do_action(self, robot_data, robot):
-        self.helpers.update_energy_level(self.required_energy)
+        robot_data["robot_energy_level"] = robot_data["robot_energy_level"] - self.required_energy
         robot.behavior.drive_off_charger()
         robot.motors.set_lift_motor(5)
         for _ in range(8):

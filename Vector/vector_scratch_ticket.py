@@ -9,6 +9,7 @@ import random
 from datetime import datetime, timedelta
 from vector_helpers import VectorHelpers
 import os
+import sys
 
 try:
     from PIL import Image
@@ -35,7 +36,8 @@ class VectorScratchTicket():
         return random.randint(self.min_jackpot, self.max_jackpot)
     
     def do_action(self, robot_data, robot):
-        self.helpers.update_energy_level(self.required_energy)
+        robot_data["robot_energy_level"] = robot_data["robot_energy_level"] - self.required_energy
+        #self.helpers.update_energy_level(self.required_energy)
         robot.behavior.drive_off_charger()
         winning_numbers = self.lotto_numbers()
         robot_numbers = self.lotto_numbers()
@@ -49,7 +51,6 @@ class VectorScratchTicket():
 
         for index, element in enumerate(winning_numbers):
             image_name = "font-" + str(element) + ".png"
-            # image_path = "/home/connorbailey/VectorConfig/face_images/numbers/" + image_name
             image_path = os.path.join(os.path.expanduser("~"), 'wire-pod/chipper/plugins/vectormyboi/VectorConfig/face_images/numbers/') + image_name
             image_file = Image.open(image_path)
             screen_data = anki_vector.screen.convert_image_to_screen_data(image_file)
@@ -67,7 +68,6 @@ class VectorScratchTicket():
 
         for index, element in enumerate(robot_numbers):
             image_name = "font-" + str(element) + ".png"
-            # image_path = "/home/connorbailey/VectorConfig/face_images/numbers/" + image_name
             image_path = os.path.join(os.path.expanduser("~"), 'wire-pod/chipper/plugins/vectormyboi/VectorConfig/face_images/numbers/') + image_name
             image_file = Image.open(image_path)
             screen_data = anki_vector.screen.convert_image_to_screen_data(image_file)
@@ -111,9 +111,15 @@ class VectorScratchTicket():
             with anki_vector.Robot(ip=robot_data["ip_address"], escape_pod=True) as robot:
                 if self.helpers.check_energy_level(self.required_energy):
                     print("Checking for lottery ticket in inventory...")
-                    # TODO: Check robot's inventory
-                    robot.behavior.say_text("Let me get my lucky coin!")
-                    self.do_action(robot_data=robot_data, robot=robot)
+                    lottery_ticket_id = 1
+                    if lottery_ticket_id in robot_data["items"]:
+                        print("Lottery ticket found in inventory.")
+                        robot_data["items"].remove(lottery_ticket_id)
+                        robot.behavior.say_text("Let me get my lucky coin!")
+                        self.do_action(robot_data=robot_data, robot=robot)
+                    else:
+                        print("Lottery ticket not found in inventory.")
+                        robot.behavior.say_text("Hey! I need a lottery ticket to perform this activity.")
                 else:
                     robot.behavior.say_text(f"I'm tired, I need {self.required_energy} energy to do that")  
         except grpc._channel._InactiveRpcError as e:

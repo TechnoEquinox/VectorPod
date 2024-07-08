@@ -20,7 +20,7 @@ TARGET_DIR="$WIREPOD_PLUGIN_DIR/vectormyboi"
 WEBROOT="$WIREPOD_DIR/chipper/webroot"
 PROJ_DIR="$HOME/vectormyboi"
 VENV_DIR="$HOME/vector-venv"
-SERVICE_FILE_PATH="/etc/systemd/system/python_server.service"
+SERVICE_FILE_PATH="/etc/systemd/system/vector-flask.service"
 
 echo "----- vectormyboi Plug-In Installer -----"
 echo -e "Created by: TechnoEquinox\tCreated on: 07-06-2024\tLast updated: 07-06-2024"
@@ -113,12 +113,49 @@ else
 fi
 
 echo "Installing files to ${WEBROOT}"
-sudo cp robot_config.json shop_items.json custom_page.html index.html $WEBROOT
-if [ -f "$WEBROOT/robot_config.json" ] && [ -f "$WEBROOT/shop_items.json" ] && [ -f "$WEBROOT/custom_page.html" ]; then
+sudo cp shop_items.json custom_page.html index.html $WEBROOT
+if [ -f "$WEBROOT/index.html" ] && [ -f "$WEBROOT/shop_items.json" ] && [ -f "$WEBROOT/custom_page.html" ]; then
     echo -e "${GREEN}Successfully installed configs to ${WEBROOT}.${NC}"
 else
     echo -e "${RED}ERROR: Installation of configs to ${WEBROOT} failed.${NC}"
     exit 1
+fi
+
+# Check if robot_config.json exists in the webroot
+if [ -f "$WEBROOT/robot_config.json" ]; then
+    echo -e "${GREEN}robot_config.json already exists in the webroot.${NC}"
+else
+    echo -e "${YELLOW}robot_config.json does not exist. Creating it now...${NC}"
+    
+    # Prompt the user for input
+    read -p "Enter the robot's serial number: " robotSerial
+    read -p "Enter the robot's IP address: " ip_address
+    read -p "Enter the IP address of this machine: " local_ip_address
+    read -p "Enter the robot's name: " robot_name
+    
+    # Create the robot_config.json file
+    cat <<EOL > "$WEBROOT/robot_config.json"
+{
+    "robotSerial": "$robotSerial",
+    "ip_address": "$ip_address",
+    "local_ip_address": "$local_ip_address",
+    "robot_name": "$robot_name",
+    "robot_wallet": 0,
+    "robot_energy_level": 20,
+    "robot_level": 1,
+    "robot_xp": 0,
+    "last_jog": "2000-01-01T00:00:01",
+    "robot_total_jog_dist": 0,
+    "items": []
+}
+EOL
+
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}Successfully created robot_config.json.${NC}"
+    else
+        echo -e "${RED}ERROR: Failed to create robot_config.json.${NC}"
+        exit 1
+    fi
 fi
 
 echo "Configuring cron jobs..."
@@ -201,10 +238,10 @@ echo "Creating systemd service file at $SERVICE_FILE_PATH..."
 echo "$SERVICE_FILE_CONTENT" | sudo tee $SERVICE_FILE_PATH > /dev/null
 
 # Reload systemd to recognize the new service, enable it, and start it
-echo -e "${YELLOW}Reloading systemd, enabling and starting the python_server service...${NC}"
+echo -e "${YELLOW}Reloading systemd, enabling and starting the vector-flask service...${NC}"
 sudo systemctl daemon-reload
-sudo systemctl enable python_server.service
-sudo systemctl start python_server.service
+sudo systemctl enable vector-flask.service
+sudo systemctl start vector-flask.service
 echo -e "${GREEN}Python server service has been set up and started successfully.${NC}"
 
 cd $WIREPOD_DIR
