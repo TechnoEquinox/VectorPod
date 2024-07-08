@@ -130,6 +130,7 @@ else
     # Prompt the user for input
     read -p "Enter the robot's serial number: " robotSerial
     read -p "Enter the robot's IP address: " ip_address
+    read -p "Enter the IP address of this machine: " local_ip_address
     read -p "Enter the robot's name: " robot_name
     
     # Create the robot_config.json file
@@ -137,6 +138,7 @@ else
 {
     "robotSerial": "$robotSerial",
     "ip_address": "$ip_address",
+    "local_ip_address": "$local_ip_address",
     "robot_name": "$robot_name",
     "robot_wallet": 0,
     "robot_energy_level": 20,

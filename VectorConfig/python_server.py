@@ -72,10 +72,20 @@ def run_battery_manager():
 
 @app.route('/buy_item', methods=['POST'])
 def buy_item():
-    data = request.get_json()
-    item_id = data.get('item_id')
-    success, message = shop_handler.handle_purchase(item_id)
-    return jsonify(success=success, message=message), 200 if success else 500
+    try:
+        data = request.get_json()
+        item_id = data['item_id']
+        
+        shop_handler = ShopHandler()
+        success, message = shop_handler.handle_purchase(item_id)
+        
+        if not success and "not enough coins" in message.lower():
+            return jsonify(success=success, message=message), 403
+        
+        return jsonify(success=success, message=message), 200 if success else 500
+    except Exception as e:
+        app.logger.error(f"Error processing /buy_item request: {str(e)}")
+        return jsonify(success=False, message="Internal Server Error"), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8091)

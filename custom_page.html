@@ -203,37 +203,42 @@
         document.getElementById('backButton').addEventListener('click', function() {
             window.history.back();
         });
-
+    
+        let host_ip = 'localhost';  // Default value
+    
         fetch('robot_config.json')
         .then(response => response.json())
         .then(data => {
             const maxEnergy = 95 + (data.robot_level * 5);
             const energyPerHour = (10 * data.robot_level) / 2;
-
+    
             document.getElementById('robot-name').textContent = data.robot_name;
             document.getElementById('robot-wallet').textContent = data.robot_wallet;
             document.getElementById('robot-energy-level').textContent = `${data.robot_energy_level}/${maxEnergy} (+${energyPerHour}/hr)`;
             document.getElementById('robot-level').textContent = data.robot_level;
             document.getElementById('robot-xp').textContent = data.robot_xp;
             document.getElementById('robot-jog-dist').textContent = `${((data.robot_total_jog_dist / 304.8) / 5280).toFixed(4)}`;
-
+    
             // Check if Scratch Ticket is in inventory
             const scratchTicketId = 1; // Replace with the actual ID of the Scratch Ticket
             if (data.items && data.items.includes(scratchTicketId)) {
                 document.getElementById('runScratchTicket').style.display = 'inline-block';
             }
+    
+            // Get host_ip
+            host_ip = data.local_ip_address || 'localhost';
+            console.log('host_ip:', host_ip);  // Debug log to verify host_ip
         })
         .catch(error => {
             console.error('Error fetching or parsing JSON:', error);
         });
-
+    
         document.addEventListener('DOMContentLoaded', function() {
             fetch('shop_items.json')
             .then(response => response.json())
             .then(data => populateShopTable(data))
             .catch(error => console.error('Error loading shop items:', error));
-
-            
+    
             document.getElementById('runScratchTicket').addEventListener('click', function() {
                 runScript('run_scratch_ticket');
             });
@@ -250,7 +255,7 @@
                 runScript('run_battery_manager');
             });
         });
-
+    
         function populateShopTable(items) {
             const tableBody = document.getElementById('shop-table').getElementsByTagName('tbody')[0];
             items.forEach(item => {
@@ -260,54 +265,59 @@
                 const descriptionCell = row.insertCell(2);
                 const costCell = row.insertCell(3);
                 const actionCell = row.insertCell(4);
-
+    
                 iconCell.innerHTML = `<img src="${item.path_to_icon}" alt="${item.title}" style="width:50px;">`;
                 titleCell.textContent = item.title;
                 descriptionCell.textContent = item.description;
                 costCell.textContent = item.cost + ' coins';
-
+    
                 const buyButton = document.createElement('button');
                 buyButton.textContent = 'Buy';
                 buyButton.addEventListener('click', () => buyItem(item.id));
                 actionCell.appendChild(buyButton);
             });
         }
-
+    
         function buyItem(itemId) {
-            fetch('http://192.168.50.123:8091/buy_item', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ item_id: itemId })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    if (response.status === 500) {
-                        showErrorPopup('An error occurred while processing the purchase.');
-                    }
-                    throw new Error('Network response was not ok');
+        fetch(`http://${host_ip}:8091/buy_item`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ item_id: itemId })
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                if (response.status === 403) {
+                    alert('You do not have enough coins to purchase this item.');
+                    return;
+                } else if (response.status === 500) {
+                    showErrorPopup('An unknown error occurred while processing the purchase.');
                 }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    alert('Purchase successful!');
-                    location.reload();
-                } else {
-                    alert('Purchase failed: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error processing the purchase:', error);
-            });
-        }
-
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Purchase successful!');
+                location.reload();
+            } else {
+                alert('Purchase failed: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error processing the purchase:', error);
+        });
+    }
+    
         function runScript(endpoint) {
-            fetch('http://192.168.50.123:8091/' + endpoint, {
+            fetch(`http://${host_ip}:8091/` + endpoint, {
                 method: 'POST'
             })
             .then(response => {
+                console.log('Response status:', response.status);  // Debug log to check response status
                 if (!response.ok) {
                     if (response.status === 500) {
                         showErrorPopup('An error occurred while executing the script.');
@@ -328,17 +338,18 @@
                 console.error('Error executing the script:', error);
             });
         }
-
+    
         // Popup control functions
         function showErrorPopup(message) {
             const errorPopup = document.getElementById('errorPopup');
             errorPopup.textContent = message;
             errorPopup.style.display = 'block';
         }
-
+    
         function closePopup() {
             document.getElementById('errorPopup').style.display = 'none';
         }
     </script>
+    
 </body>
 </html>
