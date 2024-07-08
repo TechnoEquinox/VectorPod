@@ -9,6 +9,7 @@ import random
 from datetime import datetime, timedelta
 from vector_helpers import VectorHelpers
 import os
+import sys
 
 try:
     from PIL import Image

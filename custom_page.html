@@ -156,6 +156,7 @@
             <div class="interact-buttons-container">
                 <button id="runGoForJog" class="btn btn-secondary"><i class="fa-solid fa-person-running" aria-hidden="true"></i><br>Go Jogging</button>
                 <button id="runScratchTicket" class="btn btn-secondary" style="display:none;"><i class="fa-solid fa-ticket" aria-hidden="true"></i><br>Scratch Ticket</button>
+                <button id="runDrinkEnergy" class="btn btn-secondary" style="display:none;"><i class="fa-solid fa-coffee" aria-hidden="true"></i><br>Drink Energy Drink</button>
             </div>
         </div>
 
@@ -224,6 +225,12 @@
             if (data.items && data.items.includes(scratchTicketId)) {
                 document.getElementById('runScratchTicket').style.display = 'inline-block';
             }
+
+            // Check if Energy Drink is in inventory
+            const energyDrinkId = 2; // ID of the Energy Drink
+            if (data.items && data.items.includes(energyDrinkId)) {
+                document.getElementById('runDrinkEnergy').style.display = 'inline-block';
+            }
     
             // Get host_ip
             host_ip = data.local_ip_address || 'localhost';
@@ -244,6 +251,9 @@
             });
             document.getElementById('runGoForJog').addEventListener('click', function() {
                 runScript('run_go_for_jog');
+            });
+            document.getElementById('runDrinkEnergy').addEventListener('click', function() {
+            runScript('run_drink_energy');
             });
             document.getElementById('runLevelManager').addEventListener('click', function() {
                 runScript('run_level_manager');

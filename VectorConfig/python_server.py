@@ -56,6 +56,13 @@ def run_scratch_ticket():
     success, message = execute_script_in_venv(script_path)
     return jsonify(success=success, message=message), 200 if success else 500
 
+@app.route('/run_drink_energy', methods=['POST'])
+def run_drink_energy():
+    script_path = os.path.join(os.path.expanduser("~"), "wire-pod/chipper/plugins/vectormyboi/Vector/vector_drink_energy.py")
+    logging.debug(f"Script path: {script_path}")
+    success, message = execute_script_in_venv(script_path)
+    return jsonify(success=success, message=message), 200 if success else 500
+
 @app.route('/run_wallet_manager', methods=['POST'])
 def run_wallet_manager():
     script_path = os.path.join(os.path.expanduser("~"), "wire-pod/chipper/plugins/vectormyboi/Vector/wallet_manager.py")
