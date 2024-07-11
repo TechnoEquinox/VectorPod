@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>vectormyboi v0.2.2 (Dev)</title>
+    <title>vectormyboi v1.0-alpha</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/8cdc8cbed9.js" crossorigin="anonymous"></script>
@@ -41,13 +41,15 @@
             font-size: 16px; /* Adjust font size if needed */
         }
 
+        .main-nav-parent {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
         .main-nav-child {
-            text-align: center; /* Center the button horizontally */
-            width: 100%; /* Full width to center properly */
-            display: flex; /* Use flexbox for vertical and horizontal centering */
-            justify-content: center; /* Center horizontally in flex container */
-            align-items: center; /* Center vertically in flex container */
-            height: 25vh; /* Full viewport height */
+            margin: 0 20px; /* Adjust the margin as needed for spacing */
         }
 
         .extra-text {
@@ -151,22 +153,31 @@
             <label for="showOutputToggle">Show debug output</label>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">Activities</h2>
+        <div id="section-activities" style="display: none;">
             <div class="interact-buttons-container">
                 <button id="runGoForJog" class="btn btn-secondary"><i class="fa-solid fa-person-running" aria-hidden="true"></i><br>Go Jogging</button>
                 <button id="runScratchTicket" class="btn btn-secondary" style="display:none;"><i class="fa-solid fa-ticket" aria-hidden="true"></i><br>Scratch Ticket</button>
                 <button id="runDrinkEnergy" class="btn btn-secondary" style="display:none;"><i class="fa-solid fa-coffee" aria-hidden="true"></i><br>Drink Energy Drink</button>
             </div>
+            <p>Purchase items from the shop to unlock more things to do</p>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">Robot Settings</h2>
+        <div id="section-robot-utilities" style="display: none;">
             <div class="interact-buttons-container">
                 <button id="runLevelManager" class="btn btn-secondary"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i><br>Level Manager</button>
                 <button id="runWalletManager" class="btn btn-secondary"><i class="fa-solid fa-wallet" aria-hidden="true"></i><br>Wallet Manager</button>
                 <button id="runDDLSucks" class="btn btn-secondary"><i class="fa-solid far fa-angry" aria-hidden="true"></i><br>DDL Sucks</button>
                 <button id="runBatteryManager" class="btn btn-secondary"><i class="fa-solid fa-battery-half" aria-hidden="true"></i><br>Battery Manager</button>
+            </div>
+        </div>
+
+        <div class="main-nav-parent">
+            <div class="main-nav-child">
+                <a href="#" onclick="showActivitiesSection(); return false;"><i class="fa-solid fa-star" id="icon-Activities" name="icon"></i><br />Activities</a>
+            </div>
+
+            <div class="main-nav-child">
+                <a href="#" onclick="showRobotUtilitiesSection(); return false;"><i class="fa-solid fas fa-tools" id="icon-RobotUtilities" name="icon"></i><br />Utilities</a>
             </div>
         </div>
 
@@ -201,6 +212,36 @@
         </div>
     </div>
     
+    <!-- Show/Hide Sections -->
+    <script>
+        function showActivitiesSection() {
+            var customSection = document.getElementById('section-activities');
+            if (customSection.style.display === 'none' || customSection.style.display === '') {
+                hideAllSections();
+                customSection.style.display = 'block';
+            } else {
+                customSection.style.display = 'none';
+            }
+        }
+
+        function showRobotUtilitiesSection() {
+            var customSection = document.getElementById('section-robot-utilities');
+            if (customSection.style.display === 'none' || customSection.style.display === '') {
+                hideAllSections();
+                customSection.style.display = 'block';
+            } else {
+                customSection.style.display = 'none';
+            }
+        }
+    
+        function hideAllSections() {
+            var sections = document.querySelectorAll('div[id^="section-"]');
+            sections.forEach(function(section) {
+                section.style.display = 'none';
+            });
+        }
+    </script>
+
     <script>
         document.getElementById('backButton').addEventListener('click', function() {
             window.history.back();
