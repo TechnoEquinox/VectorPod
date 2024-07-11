@@ -165,6 +165,7 @@
             <div class="interact-buttons-container">
                 <button id="runLevelManager" class="btn btn-secondary"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i><br>Level Manager</button>
                 <button id="runWalletManager" class="btn btn-secondary"><i class="fa-solid fa-wallet" aria-hidden="true"></i><br>Wallet Manager</button>
+                <button id="runDDLSucks" class="btn btn-secondary"><i class="fa-solid far fa-angry" aria-hidden="true"></i><br>DDL Sucks</button>
                 <button id="runBatteryManager" class="btn btn-secondary"><i class="fa-solid fa-battery-half" aria-hidden="true"></i><br>Battery Manager</button>
             </div>
         </div>
@@ -261,6 +262,10 @@
             document.getElementById('runWalletManager').addEventListener('click', function() {
                 runScript('run_wallet_manager');
             });
+            document.getElementById('runDDLSucks').addEventListener('click', function() {
+                runScript('run_ddl_sucks');
+            });
+
             document.getElementById('runBatteryManager').addEventListener('click', function() {
                 runScript('run_battery_manager');
             });

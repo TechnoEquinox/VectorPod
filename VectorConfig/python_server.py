@@ -77,6 +77,13 @@ def run_battery_manager():
     success, message = execute_script_in_venv(script_path)
     return jsonify(success=success, message=message), 200 if success else 500
 
+@app.route('/run_ddl_sucks', methods=['POST'])
+def run_ddl_sucks():
+    script_path = os.path.join(os.path.expanduser("~"), "wire-pod/chipper/plugins/vectormyboi/Vector/vector_hates_ddl.py")
+    logging.debug(f"Script path: {script_path}")
+    success, message = execute_script_in_venv(script_path)
+    return jsonify(success=success, message=message), 200 if success else 500
+
 @app.route('/buy_item', methods=['POST'])
 def buy_item():
     try:
